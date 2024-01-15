@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <chrono>
+#include <dlfcn.h>
 #include <filesystem>
 #include <iostream>
 #include <thread>
@@ -18,35 +19,46 @@ void update(int n) {
 	update_ptr(n);
 }
 
-void *load_dynamic_function(void *dll, const char *function_name) {
+void *load_dynamic_function(void *dll, const std::string &function_name) {
 #ifdef _WIN32
-	FARPROC proc = GetProcAddress((HMODULE)dll, function_name);
+	void *proc = (void *)GetProcAddress((HMODULE)dll, function_name.c_str());
+#else
+	void* proc = dlsym(dll, function_name.c_str());
 #endif
 	assert(proc);
-	return (void *)proc;
+	return proc;
 }
 
-void *load_dynamic_library(const char *dll_path) {
+void *load_dynamic_library(const std::string &dll_path) {
 #ifdef _WIN32
-	HMODULE result = LoadLibraryA(dll_path);
+	HMODULE lib = LoadLibraryA(dll_path.c_str());
+#else
+	void *lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
+	char *errstr = dlerror();
+	if (errstr != NULL) {
+		std::cerr << "A dynamic linking error occurred: " << errstr << "\n";
+		assert(false);
+	}
 #endif
-	assert(result);
-	return result;
+	assert(lib);
+	return lib;
 }
 
 void free_dynamic_library(void *dll) {
 #ifdef _WIN32
 	assert(FreeLibrary((HMODULE)dll));
+#else
+	assert(!dlclose(dll));
 #endif
 }
 
 void reload_dll() {
 	static void *dll;
-	static std::filesystem::file_time_type prev_write_time;
+	static std::filesystem::file_time_type prev_write_time = std::filesystem::last_write_time("update.dll");
 
 	std::filesystem::file_time_type current_write_time = std::filesystem::last_write_time("update.dll");
 
-	if (current_write_time > prev_write_time) {
+	if (current_write_time >= prev_write_time) {
 		if (dll) {
 			free_dynamic_library(dll);
 			dll = nullptr;
@@ -55,6 +67,9 @@ void reload_dll() {
 		
 		std::filesystem::copy("update.dll", "update_load.dll", std::filesystem::copy_options::overwrite_existing);
 		std::cout << "Copied update.dll to update_load.dll\n";
+
+		// Makes rare "file too short" error with dlopen() way less likely
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		dll = load_dynamic_library("update_load.dll");
 		std::cout << "Loaded update_load.dll\n";
