@@ -4,12 +4,12 @@ This repository is based on [this](https://www.youtube.com/watch?v=QAeRxfeFAo0) 
 
 ## Running on Linux or Windows
 
-`c++ update.cpp -g -shared -o update.dll`
-`c++ main.cpp -g -o program`
-`./program`
+1. `c++ update.cpp -g -shared -o update.dll`
+2. `c++ main.cpp -g -o program`
+3. `./program`
 
 ## Running on Windows using Zig
 
-`zig c++ update.cpp -g -shared -o update.dll`
-`zig c++ main.cpp -g -o program`
-`./program`
+1. `zig c++ update.cpp -g -shared -o update.dll`
+2. `zig c++ main.cpp -g -o program`
+3. `./program`
