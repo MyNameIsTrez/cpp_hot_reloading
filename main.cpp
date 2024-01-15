@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <chrono>
-#include <dlfcn.h>
 #include <filesystem>
 #include <iostream>
 #include <thread>
@@ -10,6 +9,8 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <dlfcn.h>
 #endif
 
 typedef decltype(update) update_type;
