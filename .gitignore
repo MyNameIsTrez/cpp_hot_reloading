@@ -1,2 +1,7 @@
-.vscode
-a.out
+main.lib
+program
+program.pdb
+update_load.dll
+update.dll
+update.lib
+update.pdb
