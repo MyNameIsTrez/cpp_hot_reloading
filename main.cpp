@@ -13,7 +13,7 @@
 #include <dlfcn.h>
 #endif
 
-typedef decltype(update) update_type;
+using update_type = decltype(update);
 static update_type *update_ptr;
 
 void update(int n) {
