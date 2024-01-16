@@ -74,7 +74,7 @@ void reload_dll() {
 			dll = nullptr;
 			std::cout << "Freed " << dll_path << "\n";
 		}
-		
+
 		dll = load_dynamic_library(dll_path);
 		std::cout << "Loaded " << dll_path << "\n";
 
@@ -94,7 +94,7 @@ int main() {
 
 	while (true) {
 		update(42.0);
-		
+
 		reload_dll();
 
 		std::this_thread::sleep_for(std::chrono::seconds(1));
