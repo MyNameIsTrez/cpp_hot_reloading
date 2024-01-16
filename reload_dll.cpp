@@ -22,6 +22,7 @@ void update(int n) {
 	update_ptr(n);
 }
 
+#ifndef _WIN32
 static void check_dlerror() {
 	char *err = dlerror();
 	if (err != nullptr) {
@@ -29,6 +30,7 @@ static void check_dlerror() {
 		assert(false);
 	}
 }
+#endif
 
 static void *load_dynamic_function(void *dll, const std::string &function_name) {
 	std::cout << "Loading dynamic function '" << function_name << "'\n";
