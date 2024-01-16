@@ -22,37 +22,43 @@ void update(int n) {
 	update_ptr(n);
 }
 
-void *load_dynamic_function(void *dll, const std::string &function_name) {
+static void check_dlerror() {
+	char *err = dlerror();
+	if (err != nullptr) {
+		std::cerr << "dlerror():\n" << err << "\n";
+		assert(false);
+	}
+}
+
+static void *load_dynamic_function(void *dll, const std::string &function_name) {
 	std::cout << "Loading dynamic function '" << function_name << "'\n";
 #ifdef _WIN32
 	void *proc = (void *)GetProcAddress((HMODULE)dll, function_name.c_str());
 #else
 	void* proc = dlsym(dll, function_name.c_str());
+	check_dlerror();
 #endif
 	assert(proc);
 	return proc;
 }
 
-void *load_dynamic_library(const std::string &dll_path) {
+static void *load_dynamic_library(const std::string &dll_path) {
 #ifdef _WIN32
 	HMODULE lib = LoadLibraryA(dll_path.c_str());
 #else
 	void *lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
-	char *errstr = dlerror();
-	if (errstr != nullptr) {
-		std::cerr << "dlopen() had an error:\n" << errstr << "\n";
-		assert(false);
-	}
+	check_dlerror();
 #endif
 	assert(lib);
 	return lib;
 }
 
-void free_dynamic_library(void *dll) {
+static void free_dynamic_library(void *dll) {
 #ifdef _WIN32
 	assert(FreeLibrary((HMODULE)dll));
 #else
-	assert(!dlclose(dll));
+	dlclose(dll);
+	check_dlerror();
 #endif
 }
 
