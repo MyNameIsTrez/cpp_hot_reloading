@@ -1,5 +1,7 @@
 # cpp_hot_reloading
 
+https://github.com/MyNameIsTrez/cpp_hot_reloading/assets/32989873/ce976ca7-7221-4406-8ba4-3b56e406c3ff
+
 This repository is based on [this](https://www.youtube.com/watch?v=QAeRxfeFAo0) YouTube video by Cakez, explaining how to do C++ hot reloading.
 
 ## Running
