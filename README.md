@@ -12,7 +12,7 @@ This repository is based on [this](https://www.youtube.com/watch?v=QAeRxfeFAo0) 
 
 ## Running with no DLL
 
-You can disable a DLL being used by compiling with `-D NO_DLL`:
+You can disable hot reloading, compiling everything into one executable like normal, with `-D NO_DLL`:
 
 `c++ main.cpp src/inner/update2.cpp src/init.cpp src/init2.cpp src/update.cpp -std=c++17 -I . -g -D NO_DLL -o program && ./program`
 
