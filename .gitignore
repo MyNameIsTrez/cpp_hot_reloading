@@ -2,7 +2,7 @@
 main.lib
 program
 program.pdb
-update_load.dll
+update_tmp.dll
 update.dll
 update.lib
 update.pdb

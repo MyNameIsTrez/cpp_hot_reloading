@@ -71,16 +71,8 @@ void reload_dll() {
 			std::cout << "Freed update.dll\n";
 		}
 		
-		std::error_code error_code;
-		do {
-			std::filesystem::copy("update.dll", "update_load.dll", std::filesystem::copy_options::overwrite_existing, error_code);
-			std::cout << "Copied update.dll to update_load.dll\n";
-		} while (error_code);
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-		dll = load_dynamic_library("update_load.dll");
-		std::cout << "Loaded update_load.dll\n";
+		dll = load_dynamic_library("update.dll");
+		std::cout << "Loaded update.dll\n";
 
 		update_ptr = (update_type *)load_dynamic_function(dll, "update");
 		std::cout << "Loaded dynamic function 'update'\n";
