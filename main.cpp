@@ -34,16 +34,11 @@ void *load_dynamic_library(const std::string &dll_path) {
 #ifdef _WIN32
 	HMODULE lib = LoadLibraryA(dll_path.c_str());
 #else
-	void *lib;
-	while (true) {
-		lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
-		std::cerr << "lib: " << lib << "\n";
-		char *errstr = dlerror();
-		if (errstr == nullptr) {
-			break;
-		}
+	void *lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
+	char *errstr = dlerror();
+	if (errstr != nullptr) {
 		std::cerr << "A dynamic linking error occurred: " << errstr << "\n";
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		assert(false);
 	}
 #endif
 	assert(lib);
@@ -60,11 +55,11 @@ void free_dynamic_library(void *dll) {
 
 void reload_dll() {
 	static void *dll;
-	static std::filesystem::file_time_type prev_write_time = std::filesystem::last_write_time("update.dll");
+	static std::filesystem::file_time_type prev_write_time = std::filesystem::file_time_type::min();
 
 	std::filesystem::file_time_type current_write_time = std::filesystem::last_write_time("update.dll");
 
-	if (current_write_time >= prev_write_time) {
+	if (current_write_time > prev_write_time) {
 		if (dll) {
 			free_dynamic_library(dll);
 			dll = nullptr;
@@ -87,6 +82,6 @@ int main() {
 
 		update(42);
 
-		// std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
