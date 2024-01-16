@@ -1,8 +1,3 @@
 .vscode
-main.lib
+dll
 program
-program.pdb
-update_tmp.dll
-update.dll
-update.lib
-update.pdb

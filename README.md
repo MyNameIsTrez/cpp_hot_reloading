@@ -4,12 +4,12 @@ This repository is based on [this](https://www.youtube.com/watch?v=QAeRxfeFAo0) 
 
 ## Running
 
-1. `c++ update.cpp -std=c++17 -g -shared -fPIC -o update_tmp.dll && mv update_tmp.dll update.dll`
+1. `c++ src/update.cpp -std=c++17 -g -shared -fPIC -o dll/update_tmp.dll && mv dll/update_tmp.dll dll/update.dll`
 2. `c++ main.cpp -std=c++17 -g -o program && ./program`
 3. Edit `update.cpp` and rerun step #1 to see the hot reloading in action!
 
 ## Running with Zig's compiler
 
-1. `zig c++ update.cpp -std=c++17 -g -shared -o update.dll && mv update_tmp.dll update.dll`
+1. `zig c++ src/update.cpp -std=c++17 -g -shared -o dll/update_tmp.dll && mv dll/update_tmp.dll dll/update.dll`
 2. `zig c++ main.cpp -std=c++17 -g -o program && ./program`
 3. Edit `update.cpp` and rerun step #1 to see the hot reloading in action!
