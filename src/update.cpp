@@ -1,8 +1,8 @@
-#include "update.hpp"
+#include "functions.hpp"
 
 #include <iostream>
 
 void update(int n) {
-	std::cout << n << "\n";
-	// std::cout << n * 2 << "\n";
+	std::cout << "update() calling update2() " << n << "\n";
+	update2(n);
 }

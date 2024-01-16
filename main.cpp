@@ -1,4 +1,4 @@
-#include "src/update.hpp"
+#include "functions.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -14,6 +14,12 @@
 #include <dlfcn.h>
 #endif
 
+using init_type = decltype(init);
+static init_type *init_ptr;
+void init(double n) {
+	init_ptr(n);
+}
+
 using update_type = decltype(update);
 static update_type *update_ptr;
 void update(int n) {
@@ -21,6 +27,7 @@ void update(int n) {
 }
 
 void *load_dynamic_function(void *dll, const std::string &function_name) {
+	std::cout << "Loading dynamic function '" << function_name << "'\n";
 #ifdef _WIN32
 	void *proc = (void *)GetProcAddress((HMODULE)dll, function_name.c_str());
 #else
@@ -37,7 +44,7 @@ void *load_dynamic_library(const std::string &dll_path) {
 	void *lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
 	char *errstr = dlerror();
 	if (errstr != nullptr) {
-		std::cerr << "A dynamic linking error occurred: " << errstr << "\n";
+		std::cerr << "dlopen() had an error:\n" << errstr << "\n";
 		assert(false);
 	}
 #endif
@@ -55,40 +62,40 @@ void free_dynamic_library(void *dll) {
 
 void reload_dll() {
 	static void *dll;
-	static const std::vector<std::string> names = {"update"};
-	static std::vector<std::filesystem::file_time_type> prev_write_times(names.size(), std::filesystem::file_time_type::min());
+	static std::filesystem::file_time_type prev_write_time = std::filesystem::file_time_type::min();
 
-	for (int i = 0; i < names.size(); i++) {
-		const auto &name = names[i];
-		const auto &prev_write_time = prev_write_times[i];
+	static const std::string dll_path = "program.dll";
 
-		const auto path = "dll/" + name + ".dll";
+	const std::filesystem::file_time_type current_write_time = std::filesystem::last_write_time(dll_path);
 
-		const std::filesystem::file_time_type current_write_time = std::filesystem::last_write_time(path);
-
-		if (current_write_time > prev_write_time) {
-			if (dll) {
-				free_dynamic_library(dll);
-				dll = nullptr;
-				std::cout << "Freed " << path << "\n";
-			}
-			
-			dll = load_dynamic_library(path);
-			std::cout << "Loaded " << path << "\n";
-
-			update_ptr = (update_type *)load_dynamic_function(dll, name);
-			std::cout << "Loaded dynamic function '" << name << "'\n";
-
-			prev_write_times[i] = current_write_time;
+	if (current_write_time > prev_write_time) {
+		if (dll) {
+			free_dynamic_library(dll);
+			dll = nullptr;
+			std::cout << "Freed " << dll_path << "\n";
 		}
+		
+		dll = load_dynamic_library(dll_path);
+		std::cout << "Loaded " << dll_path << "\n";
+
+		init_ptr = (init_type *)load_dynamic_function(dll, "init");
+		update_ptr = (update_type *)load_dynamic_function(dll, "update");
+
+		std::cout << "Loaded all dynamic functions\n";
+
+		prev_write_time = current_write_time;
 	}
 }
 
 int main() {
-	while (true) {
-		reload_dll();
+	reload_dll();
 
-		update(42);
+	init(69);
+
+	while (true) {
+		update(42.0);
+		
+		reload_dll();
 
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
