@@ -34,11 +34,16 @@ void *load_dynamic_library(const std::string &dll_path) {
 #ifdef _WIN32
 	HMODULE lib = LoadLibraryA(dll_path.c_str());
 #else
-	void *lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
-	char *errstr = dlerror();
-	if (errstr != NULL) {
+	void *lib;
+	while (true) {
+		lib = dlopen(("./" + dll_path).c_str(), RTLD_NOW);
+		std::cerr << "lib: " << lib << "\n";
+		char *errstr = dlerror();
+		if (errstr == nullptr) {
+			break;
+		}
 		std::cerr << "A dynamic linking error occurred: " << errstr << "\n";
-		assert(false);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	}
 #endif
 	assert(lib);
@@ -66,11 +71,13 @@ void reload_dll() {
 			std::cout << "Freed update.dll\n";
 		}
 		
-		std::filesystem::copy("update.dll", "update_load.dll", std::filesystem::copy_options::overwrite_existing);
-		std::cout << "Copied update.dll to update_load.dll\n";
+		std::error_code error_code;
+		do {
+			std::filesystem::copy("update.dll", "update_load.dll", std::filesystem::copy_options::overwrite_existing, error_code);
+			std::cout << "Copied update.dll to update_load.dll\n";
+		} while (error_code);
 
-		// Makes rare "file too short" error with dlopen() way less likely
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 		dll = load_dynamic_library("update_load.dll");
 		std::cout << "Loaded update_load.dll\n";
@@ -88,6 +95,6 @@ int main() {
 
 		update(42);
 
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		// std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
