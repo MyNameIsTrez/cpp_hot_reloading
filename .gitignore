@@ -3,5 +3,6 @@ main.lib
 program
 program_tmp.pdb
 program.dll
+program.exe
 program.pdb
 update2.lib
