@@ -18,4 +18,4 @@ You can disable a DLL being used by compiling with `-D NO_DLL`:
 
 ## Running with Zig's compiler
 
-It's also possible to compile with `zig c++`, rather than `c++`.
+If you're on Windows, you might want to install [Zig's compiler](https://ziglang.org/) so you can run these commands with `zig c++`.
