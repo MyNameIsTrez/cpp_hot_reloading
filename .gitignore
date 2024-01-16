@@ -1,3 +1,7 @@
 .vscode
+main.lib
 program
+program_tmp.pdb
 program.dll
+program.pdb
+update2.lib
