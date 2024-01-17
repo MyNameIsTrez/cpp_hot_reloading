@@ -19,3 +19,7 @@ You can disable hot reloading, compiling everything into one executable like nor
 ## Running with Zig's compiler
 
 If you're on Windows, you might want to install [Zig's compiler](https://ziglang.org/) so you can run these commands with `zig c++`.
+
+## Stepping into the DLL's code with GDB
+
+Stepping into the DLL's code works out of the box, but if you make any changes to the DLL's code, you'll need to run `directory` and then answer "Reinitialize source path to empty?" with `y` in order to have GDB reload the changed files.
