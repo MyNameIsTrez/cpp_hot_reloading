@@ -7,6 +7,5 @@
 #endif
 
 extern "C" {
-	EXPORT_FN void init(double n);
 	EXPORT_FN void update(int n);
 }

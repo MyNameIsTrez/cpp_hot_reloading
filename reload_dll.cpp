@@ -11,12 +11,6 @@
 #include <dlfcn.h>
 #endif
 
-using init_type = decltype(init);
-static init_type *init_ptr;
-void init(double n) {
-	init_ptr(n);
-}
-
 using update_type = decltype(update);
 static update_type *update_ptr;
 void update(int n) {
@@ -83,7 +77,6 @@ void reload_dll() {
 		dll = load_dynamic_library(dll_path);
 		std::cout << "Loaded " << dll_path << "\n";
 
-		init_ptr = (init_type *)load_dynamic_function(dll, "init");
 		update_ptr = (update_type *)load_dynamic_function(dll, "update");
 
 		std::cout << "Loaded all dynamic functions\n";

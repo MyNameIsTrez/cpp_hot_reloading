@@ -9,8 +9,6 @@ int main() {
 	reload_dll();
 #endif
 
-	init(69);
-
 	while (true) {
 		update(42.0);
 
