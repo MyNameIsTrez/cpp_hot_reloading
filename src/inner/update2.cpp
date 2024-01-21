@@ -1,5 +1,3 @@
-#include "functions.hpp"
-
 #include <iostream>
 
 void update2(int n) {
