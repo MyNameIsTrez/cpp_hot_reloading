@@ -23,3 +23,13 @@ If you're on Windows, you might want to install [Zig's compiler](https://ziglang
 ## Stepping into the DLL's code with GDB
 
 Stepping into the DLL's code works out of the box, but if you make any changes to the DLL's code, you'll need to run `directory` and then answer "Reinitialize source path to empty?" with `y` in order to have GDB reload the changed files.
+
+## Compiling with GCC
+
+You'll need to compile with `-fno-gnu-unique` in order for `dlclose()` to do something on GCC.
+
+The [`-fno-gnu-unique`](https://gcc.gnu.org/onlinedocs/gcc-9.1.0/gcc/Code-Gen-Options.html) option's documentation states (where DSO stands for Dynamic Shared Object):
+
+> But this causes dlclose to be ignored for affected DSOs; if your program relies on reinitialization of a DSO via dlclose and dlopen, you can use -fno-gnu-unique.
+
+Further discussion can be found at [this](https://stackoverflow.com/a/51402034/13279557) Stack Overflow answer.
