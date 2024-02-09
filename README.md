@@ -12,9 +12,9 @@ This repository is based on [this](https://www.youtube.com/watch?v=QAeRxfeFAo0) 
 
 ## Running with no DLL
 
-You can disable hot reloading, compiling everything into one executable like normal, with `-D NO_DLL`:
+You can disable hot reloading, compiling everything into one executable like normal, with `-D NO_HOT_RELOADING`:
 
-`c++ main.cpp src/inner/update2.cpp src/update.cpp -std=c++17 -I . -g -D NO_DLL -o program && ./program`
+`c++ main.cpp src/inner/update2.cpp src/update.cpp -std=c++17 -I . -g -D NO_HOT_RELOADING -o program && ./program`
 
 ## Running with Zig's compiler
 
