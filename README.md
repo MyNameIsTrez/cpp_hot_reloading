@@ -26,7 +26,7 @@ Stepping into the DLL's code works out of the box, but if you make any changes t
 
 ## Compiling with GCC
 
-You'll need to compile with `-fno-gnu-unique` in order for `dlclose()` to do something on GCC.
+Depending on how your GCC is configured, you might need to compile with `-fno-gnu-unique` in order for `dlclose()` to work.
 
 The [`-fno-gnu-unique`](https://gcc.gnu.org/onlinedocs/gcc-9.1.0/gcc/Code-Gen-Options.html) option's documentation states (where DSO stands for Dynamic Shared Object):
 
